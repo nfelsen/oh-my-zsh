@@ -1,0 +1,60 @@
+#compdef ubik
+#autoload
+
+# ubik zsh completion
+
+local -a _1st_arguments
+_1st_arguments=(
+    'aws:Execute aws-cli command with temporary credentials'
+    'aws-auth:Obtain temporary AWS credentials and spawn subshell'
+    'central:Run a command on the Ubik Central Config server'
+    'git:Execute an arbitrary git command'
+    'help:Get general help, or help on a specified command'
+    'hive:Connect to interactive hive instance'
+    'install:Install an Ubik-style prebuilt'
+    'local-config:Read or set a local configuration property'
+    'login:Log into a prod instance with Ubik credentials'
+    'prod-ec2:Run an EC2 command with production credentials'
+    'prod-rsync:Run rsync using a production access key'
+    'prod-scp:Run scp using a production access key'
+    'prod-ssh:Run ssh using a production access key'
+    'self-update:Update this copy of Ubik if needed'
+    'simplate:Perform simple variable substitution on a file'
+    'socksproxy:Configures a socksproxy when the VPN is down'
+    'spawn:Spawn a new machine instance'
+    'su:Run an interactive root shell, using the existing Ubik credentials'
+    'sudo:Run a command as root, using the existing Ubik credentials'
+    'tunnel:Configures simple SSH tunnels when the VPN is down'
+)
+
+__ubik-login ()
+{
+    _wanted application expl 'command' compadd $(command cat ~/.ubik/known_hosts)
+
+}
+
+local expl
+typeset -A opt_args
+
+_arguments -C \
+    ':command:->command' \
+    '*::options:->options'
+
+case $state in
+  (command)
+      _describe -t commands "gem subcommand" _1st_arguments
+      return
+  ;;
+
+  (options)
+    case $line[1] in
+      (help)
+         _arguments ':feature:__task_list'
+      ;;
+      (login)
+          __ubik-login
+      ;;
+    esac
+  ;;
+esac
+
